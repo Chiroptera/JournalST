@@ -1,0 +1,24 @@
+[
+    {
+        "id":"insertdate",
+        "caption": "Journal: Insert date",
+        "command": "insert_date"
+    },
+    {
+        "id":"inserttime",
+        "caption": "Journal: Insert time", 
+        "command": "insert_time"
+    },
+    {
+        "id":"insertentry",
+        "caption": "Journal: New entry", 
+        "command": "prompt_journal_entry"
+    },
+    {
+        "id":"createjournalfile",
+        "caption": "Journal: New journal file", 
+        "command": "prompt_journal_filename"
+    }
+]
+
+
