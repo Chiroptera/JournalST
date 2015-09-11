@@ -8,6 +8,7 @@ TODO:
 """
 
 folder = "/home/chiroptera/Dropbox/journal/"
+evernote = True # enables metadata for using entry as a Evernote note; to be used with Evernote package
 
 # def plugin_loaded():
 #     """Called directly from sublime on plugin load
@@ -67,6 +68,10 @@ class InsertJournalEntryCommand(sublime_plugin.TextCommand):
 
     def run(self, edit, tags):
         entryString = "---" + '\n'
+        if evernote:
+            entryString += "title:" + '\n'
+            entryString += "notebook:" + '\n'
+
         entryString += "date:" + time.strftime("%d-%m-%Y") + '\n'
         entryString += "tag:" + tags + '\n'
         #entryString += "location:" + loc + '\n'
