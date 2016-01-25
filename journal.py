@@ -7,8 +7,8 @@ TODO:
 
 """
 
-folder = "/home/chiroptera/Dropbox/journal/"
-evernote = True # enables metadata for using entry as a Evernote note; to be used with Evernote package
+JOURNAL_PATH = "/home/chiroptera/Dropbox/journal/"
+EVERNOTE = True # enables metadata for using entry as a Evernote note; to be used with Evernote package
 
 # def plugin_loaded():
 #     """Called directly from sublime on plugin load
@@ -25,6 +25,19 @@ evernote = True # enables metadata for using entry as a Evernote note; to be use
 
 #     refresh_caches()
 
+# def plugin_loaded():
+#     """Called directly from sublime on plugin load
+#     """
+#     global JOURNAL_PATH
+#     global EVERNOTE
+
+#     settings = sublime.load_settings('Citer.sublime-settings')
+#     JOURNAL_PATH = settings.get('journal_path')
+#     if not os.path.exist(JOURNAL_PATH):
+#         raise Exception("Path not found: {}".format(JOURNAL_PATH))
+#     EVERNOTE = settings.get('use_evernote')
+
+#     refresh_caches()
 
 class InsertDateCommand(sublime_plugin.TextCommand):
     def run(self, edit):
@@ -38,6 +51,10 @@ class InsertTimeCommand(sublime_plugin.TextCommand):
         for s in sel:
             self.view.replace(edit, s, time.strftime("%Hh%M"))
 
+
+global ENTRY_TAGS
+global ENTRY_NOBTEBOOK
+global ENTRY_NAME
 
 class PromptJournalEntryCommand(sublime_plugin.WindowCommand):
     def run(self):
@@ -68,18 +85,19 @@ class InsertJournalEntryCommand(sublime_plugin.TextCommand):
 
     def run(self, edit, tags):
         entryString = "---" + '\n'
-        if evernote:
+        if EVERNOTE:
             entryString += "title:" + '\n'
             entryString += "notebook:" + '\n'
 
         entryString += "date:" + time.strftime("%d-%m-%Y") + '\n'
+        entryString += "time:" + '\n'
         entryString += "tag:" + tags + '\n'
         #entryString += "location:" + loc + '\n'
         entryString += "---" + '\n'
 
         pos = self.view.sel()[0].begin()
 
-        self.view.insert(edit,pos,entryString)
+        self.view.insert(edit, pos, entryString)
         pass
 
 
@@ -90,9 +108,9 @@ class PromptJournalFilenameCommand(sublime_plugin.WindowCommand):
         pass
 
     def on_done(self, filename):
-        if not os.path.isfile(folder+filename):
+        if not os.path.isfile(FOLDER+filename):
             # save file
-            newFile = open(folder+filename,'w')
+            newFile = open(FOLDER + filename, 'w')
             newFile.close()
             
-        self.window.open_file(folder+filename)
+        self.window.open_file(FOLDER + filename)
