@@ -18,7 +18,7 @@
         "id":"createjournalfile",
         "caption": "Journal: New journal file", 
         "command": "prompt_journal_filename"
-    }
+    },
 ]
 
 
