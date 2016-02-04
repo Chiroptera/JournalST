@@ -1,36 +1,20 @@
 import sublime, sublime_plugin, time
 import os.path
-from config import *
 
+def plugin_loaded():
+    """Called directly from sublime on plugin load
+    """
+    global JOURNAL_PATH
 
-# def plugin_loaded():
-#     '''called directly from sublime on plugin load
-#     '''
+    settings = sublime.load_settings('journal.sublime-settings')
 
-#     global JOURNAL_DIR 
+    JOURNAL_PATH = settings.get('journal_path')
+    print('journal_path setting: {}'.format(JOURNAL_PATH))
+    # sublime.status_message('journal_path setting: {}'.format(JOURNAL_PATH))
 
-
-#     settings = sublime.load_settings('Journal.sublime-settings')
-#     JOURNAL_FOLDER = settings.get('journal_dir')
-
-#      if JOURNAL_FOLDER is None or JOURNAL_FOLDER == '' or not os.path.isfile(JOURNAL_FOLDER):
-#         sublime.status_message('WARNING: No journal directory path configured for Journal.')
-
-#     refresh_caches()
-
-# def plugin_loaded():
-#     """Called directly from sublime on plugin load
-#     """
-#     global JOURNAL_PATH
-#     global EVERNOTE
-
-#     settings = sublime.load_settings('Citer.sublime-settings')
-#     JOURNAL_PATH = settings.get('journal_path')
-#     if not os.path.exist(JOURNAL_PATH):
-#         raise Exception("Path not found: {}".format(JOURNAL_PATH))
-#     EVERNOTE = settings.get('use_evernote')
-
-#     refresh_caches()
+    if not os.path.exists(JOURNAL_PATH):
+        sublime.status_message('No journal directory path configured for Journal. Use the "Preferences: JournalST - User" command to set it.')
+        sublime.error_message('No journal directory path configured for Journal. Use the "Preferences: JournalST - User" command to set it.')
 
 class InsertDateCommand(sublime_plugin.TextCommand):
     def run(self, edit):
@@ -83,9 +67,11 @@ class InsertJournalEntryCommand(sublime_plugin.TextCommand):
     def run(self, edit, **meta):
         entryString = '---\n'
         entryString += 'date: {}\n'.format(time.strftime('%d-%m-%Y'))
-        entryString += 'time: \n'.format(time.strftime('%H-%M'))
-        entryString += 'tag: {}\n'.format(meta['tag'])
-        #entryString += 'location: {}\n'.format(loc)
+        entryString += 'time: {}\n'.format(time.strftime('%H:%M'))
+        if meta['tag'] is not '':
+            entryString += 'tag: {}\n'.format(meta['tag'])
+        if meta['loc'] is not '':
+            entryString += 'location: {}\n'.format(meta['loc'])
         entryString += '---\n'
 
         pos = self.view.sel()[0].begin()
@@ -101,9 +87,15 @@ class PromptJournalFilenameCommand(sublime_plugin.WindowCommand):
         pass
 
     def on_done(self, filename):
-        if not os.path.isfile(FOLDER+filename):
-            # save file
-            newFile = open(FOLDER + filename, 'w')
+        if not os.path.exists(JOURNAL_PATH):
+            sublime.status_message('Configured journal path does not exist. Use the "Preferences: JournalST - User" command to set a valid path.')
+            sublime.error_message('Configured journal path does not exist. Use the "Preferences: JournalST - User" command to set a valid path.')
+            return
+
+        file_path = os.path.join(JOURNAL_PATH, filename)
+        # create file if it does not exist
+        if not os.path.isfile(file_path):
+            newFile = open(file_path, 'w')
             newFile.close()
             
-        self.window.open_file(FOLDER + filename)
+        self.window.open_file(file_path)

@@ -19,6 +19,20 @@
         "caption": "Journal: New journal file", 
         "command": "prompt_journal_filename"
     },
+    {
+        "caption": "Preferences: JournalST – User",
+        "command": "open_file", "args":
+        {
+            "file": "${packages}/User/journal.sublime-settings"
+        }
+    },
+    {
+        "caption": "Preferences: JournalST – Default",
+        "command": "open_file", "args":
+        {
+            "file": "${packages}/journal/journal.sublime-settings"
+        }
+    },    
 ]
 
 
