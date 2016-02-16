@@ -26,7 +26,7 @@ class InsertTimeCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         sel = self.view.sel()
         for s in sel:
-            self.view.replace(edit, s, time.strftime('%Hh%M'))
+            self.view.replace(edit, s, time.strftime('%H:%M'))
 
 class PromptJournalEntryCommand(sublime_plugin.WindowCommand):
     def run(self):
